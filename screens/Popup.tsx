@@ -15,7 +15,7 @@ const SplashScreen = ({navigation}:any) => {
   }, []);
 
   return (
-    <View style={{ flex: 1,margin:35, alignItems: 'center', padding:5 }}>
+    <View style={{ flex: 1, alignItems: 'center', padding:25 , backgroundColor:'white'}}>
       <View style={tw`bg-gray-200 p-2`} >
         <Text style={tw`text-black`} >Logo</Text>
       </View>

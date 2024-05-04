@@ -2,10 +2,10 @@ import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, TextInput } 
 import React,{useState} from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import tw from "twrnc";
-import Antdesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { useNavigation } from '@react-navigation/native';
 
 const passwordSchema = Yup.object().shape({
     password: Yup.string()
@@ -19,13 +19,20 @@ const passwordSchema = Yup.object().shape({
     phone: Yup.string()
         .min(10, 'Phone number is too short - should be 10 digits')
         .max(10, 'Phone number is too long - should be 10 digits')
-        .required('Phone number is required')
+        .required('Phone number is required'),
+    confirmpassword: Yup.string()
+        .oneOf([Yup.ref('password')], 'Passwords must match'),
 });
 
-export default function Login({ navigation }: any) {
+export default function Login() {
+    const navigation = useNavigation();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const handleVisibility = () => {
         setIsPasswordVisible(!isPasswordVisible);
+    }
+    const handleSubmitForm = () => {
+        console.log("Form Submitted");
+        navigation.navigate('Popup');
     }
     return (
             <View>
@@ -38,7 +45,7 @@ export default function Login({ navigation }: any) {
                     initialValues={{ password: '', email: '', phone: ''}}
                     validationSchema={passwordSchema}
                     onSubmit={values => console.log(values)} >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                    {({ handleChange, handleBlur, values, errors }) => (
                         <View style={{margin: hp('2%'),marginTop:hp(25)}} >
                         <TextInput
                             style={tw`bg-white border focus:border-gray-500 text-black p-3 rounded-lg mx-2`}
@@ -75,7 +82,7 @@ export default function Login({ navigation }: any) {
                         ) : null}
                         </Text>
                         <View style={tw`flex-row justify-around mt-5 items-center`} >
-                            <TouchableOpacity style={tw`bg-blue-600 w-20 rounded-full p-2 items-center`} onPress={()=>handleSubmit} ><Text style={tw`text-white`} >Sign in</Text></TouchableOpacity>
+                            <TouchableOpacity style={tw`bg-blue-600 w-20 rounded-full p-2 items-center`} onPress={handleSubmitForm} ><Text style={tw`text-white`} >Sign in</Text></TouchableOpacity>
                             <TouchableOpacity>
                                 <Text style={tw`text-blue-200 underline`} >Forgot Password?</Text>
                             </TouchableOpacity>
@@ -105,5 +112,12 @@ const styles = StyleSheet.create({
         shadowColor: '#333',
         shadowOpacity: 0.4,
         shadowRadius: 3
-    }
+    },
+    input: {
+        backgroundColor: '#fff',
+        height: hp('7%'),
+        margin: wp('2%'),
+        padding: wp('2%'),
+        borderRadius: 10
+    },
 })
